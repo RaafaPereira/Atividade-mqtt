@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js" integrity="sha256-/xUj+3OJU5yExlq6GSYGSHk7tPXikynS7ogEvDej/m4=" crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/4.4.1/socket.io.js"></script>
+    <title>Document</title>
+</head>
+<body>
+    <button onclick="getMessages()"> Get Messages</button>
+    <div id="mensagem"></div>
+    <script>
+        function getMessages(){
+            $.get("http://127.0.0.1:5000/get-messages", function(response) {
+                $("#mensagem").html('')
+                response.forEach(element => {
+                    $("#mensagem").append(`<div><h1>${element.message}</h1></div>`);
+                });
+            })
+        }
+
+        $( document ).ready(function() {
+            namespace = '/messages';
+            var socket = io(namespace);
+
+            socket.on('connect', function() {
+                console.log('entrou')
+            });
+
+            socket.on('on_message', function(msg, cb) {
+                console.log(msg)
+                $("#mensagem").append(`<div><h1>${msg.message}</h1></div>`);
+            });
+        });
+    </script>
+</body>
+</html>
